@@ -5,6 +5,14 @@ export interface ExecCommandOptions {
     background?: boolean;
 }
 
+export interface CommandOutput {
+    output: string;
+}
+
+export interface Envar {
+    value: string;
+}
+
 export interface OpenDialogOptions {
     multiSelections?: boolean;
     filters?: Filter[];
@@ -18,6 +26,12 @@ export interface SaveDialogOptions {
 export interface Filter {
     name: string;
     extensions: string[];
+}
+
+export interface DialogResponse {
+    selectedEntry?: string;
+    success?: boolean;
+    error?: string;
 }
 
 export interface TrayOptions {
@@ -48,15 +62,19 @@ export enum MessageBoxChoice {
     ABORT_RETRY_IGNORE = 'ABORT_RETRY_IGNORE'
 };
 
-export function execCommand(command: string, options?: ExecCommandOptions): Promise<any> {
+export interface MessageBoxResult {
+    yesButtonClicked: boolean;
+}
+
+export function execCommand(command: string, options?: ExecCommandOptions): Promise<CommandOutput> {
     return sendMessage('os.execCommand', { command, ...options });
 };
 
-export function getEnv(key: string): Promise<any> {
+export function getEnv(key: string): Promise<Envar> {
     return sendMessage('os.getEnv', { key });
 };
 
-export function showOpenDialog(title?: string, options?: OpenDialogOptions): Promise<any> {
+export function showOpenDialog(title?: string, options?: OpenDialogOptions): Promise<DialogResponse> {
     return sendMessage('os.showOpenDialog', { title, ...options });
 };
 
@@ -64,7 +82,7 @@ export function showFolderDialog(title?: string): Promise<any> {
     return sendMessage('os.showFolderDialog', { title });
 };
 
-export function showSaveDialog(title?: string, options?: SaveDialogOptions): Promise<any> {
+export function showSaveDialog(title?: string, options?: SaveDialogOptions): Promise<DialogResponse> {
     return sendMessage('os.showSaveDialog', { title, ...options });
 };
 
@@ -73,7 +91,7 @@ export function showNotification(title: string, content: string, icon?: Icon): P
 };
 
 export function showMessageBox(title: string, content: string, 
-                choice?: MessageBoxChoice, icon?: Icon): Promise<any> {
+                choice?: MessageBoxChoice, icon?: Icon): Promise<MessageBoxResult> {
     return sendMessage('os.showMessageBox', { title, content, choice, icon });
 };
 

@@ -1,5 +1,27 @@
 import { sendMessage } from '../ws/websocket';
 
+export interface ReadFileResponse {
+    data: string;
+    success: boolean;
+}
+
+export type EntryType = 'FILE' | 'DIRECTORY';
+
+export interface FileOrDirectoryEntry {
+    entry: string;
+    type: EntryType;
+}
+
+export interface FileOrDirectoryEntries {
+    entries: Array<FileOrDirectoryEntry>;
+}
+
+export interface FileStats {
+    size: number;
+    isFile: boolean;
+    isDirectory: boolean;
+}
+
 export function createDirectory(path: string): Promise<any> {
     return sendMessage('filesystem.createDirectory', { path });
 };
@@ -25,11 +47,11 @@ export function writeBinaryFile(path: string, data: ArrayBuffer): Promise<any> {
     });
 };
 
-export function readFile(path: string): Promise<any> {
+export function readFile(path: string): Promise<ReadFileResponse> {
     return sendMessage('filesystem.readFile', { path });
 };
 
-export function readBinaryFile(path: string): Promise<any> {
+export function readBinaryFile(path: string): Promise<ArrayBuffer> {
     return new Promise((resolve: any, reject: any) => {
         sendMessage('filesystem.readBinaryFile', { path })
         .then((base64Data: string) => {
@@ -51,7 +73,7 @@ export function removeFile(path: string): Promise<any> {
     return sendMessage('filesystem.removeFile', { path });
 };
 
-export function readDirectory(path: string): Promise<any> {
+export function readDirectory(path: string): Promise<FileOrDirectoryEntries> {
     return sendMessage('filesystem.readDirectory', { path });
 };
 
@@ -63,6 +85,6 @@ export function moveFile(source: string, destination: string): Promise<any> {
     return sendMessage('filesystem.moveFile', { source, destination });
 };
 
-export function getStats(path: string): Promise<any> {
+export function getStats(path: string): Promise<FileStats> {
     return sendMessage('filesystem.getStats', { path });
 };
