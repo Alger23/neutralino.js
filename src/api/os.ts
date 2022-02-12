@@ -6,7 +6,11 @@ export interface ExecCommandOptions {
 }
 
 export interface CommandOutput {
-    output: string;
+    pid: Number;
+    stdOut: string;
+    stdErr: string;
+    exitCode: Number;
+
 }
 
 export interface Envar {
